@@ -1,0 +1,250 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+	<mapper namespace="com.qjk.dao.IUserDao">
+	
+	<!-- create table-->
+	<!-- 
+	CREATE TABLE `product`.`user` (
+  		`uid` bigint(20) AUTO_INCREMENT ,
+ 		`email` varchar(128),
+  		`password` varchar(128) not null,
+  		`phone` varchar(16) not null,
+  		`logo` varchar(64),
+ 		`nick` varchar(32),
+ 		 primary key(`uid`)
+ 	)engine=innodb default charset=utf8;
+ 	-->
+ 	
+ 	<!-- create useroptions -->
+ 	
+ 	<!--
+ 	 CREATE TABLE `product`.`user_options` (
+  		`optionId` bigint(20) AUTO_INCREMENT primary key,
+  		`uid` bigint(20)  ,
+ 		`name` varchar(128) not null,
+  		`value` varchar(128) not null,
+         foreign key(`uid`) references user(uid) 
+ 	)engine=innodb default charset=utf8;
+ 	 -->
+	
+	<!-- <cache /> -->
+<!-- <resultMap id="resultMoodMap" type="Mood" >
+		<id column="objectId" property="objectId"/>
+		<result column="title" property="title"/>
+		<result column="createTime" property="createTime"/>
+		<result column="content" property="content"/>
+		<result column="moodType" property="moodType"/>
+		<result column="sequence" property="sequence" />
+		<result column="moodState" property="moodState"/>
+		<result column="location" property="location"/>
+	</resultMap> -->
+	
+	<resultMap type="User" id="baseResultMap">  
+        <id column="objectId" property="objectId"/>  
+        <result column="nick" property="nick"/>  
+        <result column="logo" property="logo"/>  
+        <result column="phone" property="phone"/>  
+        <result column="email" property="email"/>  
+          
+    </resultMap> 
+	
+	<insert id="insertUser" parameterType="User" useGeneratedKeys="true" keyProperty="uid">
+        INSERT INTO
+        	User (phone,nick,email,logo,password) 
+        		VALUES(#{phone},#{nick},#{email},#{logo},#{password}) ;
+	</insert>	
+    
+    <select id="selectUser" parameterType="long" resultType="User">  
+        SELECT * FROM User WHERE uid=#{id}  ;
+    </select>     
+    
+    <select id="selectUserList"  resultType="User" >  
+        SELECT * FROM User   ;
+    </select>      
+    
+    <select id="selectUserByAccount" parameterType="string"  resultType="User" >  
+        SELECT * FROM User WHERE phone=#{account} OR email=#{account} LIMIT 1  ;
+    </select>  
+    
+    <update id="updateUser" parameterType="user">
+		UPDATE USER 
+		<set> 
+			<if test="phone != null">
+				phone=#{phone},
+			</if>
+			<if test="nick != null">
+				nick=#{nick},
+			</if>
+			<if test="email != null">
+				email=#{email},
+			</if>
+			<if test="logo != null">
+				logo=#{logo},
+			</if>
+			<if test="password != null">
+				password=#{password}
+			</if>
+		</set>
+				WHERE uid=#{uid}
+	</update>
+	
+	<delete id="deleteUser" parameterType="long">
+		DELETE FROM USER WHERE uid=#{id}
+	</delete>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+<!-- 	
+	<update id="updateMood" parameterType="Mood">
+		UPDATE Mood 
+			SET title=#{title},content=#{content},moodType=#{moodType},
+				sequence=#{sequence},moodState=#{moodState},location=#{location} WHERE objectId=#{objectId}
+	</update>
+	
+	<delete id="deleteMood" parameterType="long">
+		DELETE FROM Mood WHERE objectId=#{objectId}
+	</delete>
+	
+	
+	<select id="queryMood" resultType="Mood" parameterType="Mood" useCache="true">
+		SELECT 
+			objectId,title,createTime,content,moodType,sequence,moodState ,location
+				from Mood
+					where 1=1 
+					<if test="objectId != 0">
+						AND objectId=#{objectId}
+					</if>
+					<if test="createTime != 0">
+						AND createTime=#{createTime}
+					</if>
+					<if test="title != null">
+						AND title=#{title}
+					</if>
+					<if test="content != null">
+						AND content=#{content}
+					</if>
+	</select>
+	
+	<select id="queryMoodById" resultType="Mood" parameterType="long">
+		SELECT 
+			objectId,title,createTime,content,moodType,sequence,moodState,location
+				from Mood
+					where objectId=#{objectId}
+	</select>
+	
+	<select id="queryMoodList" resultType="Mood" >
+		SELECT 
+			objectId,title,createTime,content,moodType,sequence,moodState,location
+				from Mood
+	</select>
+	
+	<select id="queryMoodVo" resultType="Mood" parameterType="MoodVo">
+		SELECT 
+			objectId,title,createTime,content,moodType,sequence,moodState,location 
+				FROM Mood WHERE 1=1 
+		<if test ="t != null">
+			<if test ="t.moodState != 2 ">
+				AND moodState = #{t.moodState}
+			</if>
+		</if>
+		<if test="order != null">
+			ORDER BY ${order} 
+		</if>
+		LIMIT #{offSet},#{pageSize}
+	</select>
+	
+	<select id="countMoodVo" resultType="java.lang.Integer" parameterType="MoodVo">
+		SELECT 
+			count(*) 
+				FROM Mood WHERE 1=1 
+		<if test ="t != null">
+			AND moodState = #{t.moodState}
+		 
+		</if>
+	</select> -->
+	
+<!-- 	
+	<select id="queryById" resultMap="resultListUser" parameterType="string">
+		SELECT U.USER_ID,U.USER_NAME,U.PASSWORD,U.ORG,U.ORG_LEVEL,U.ERROR_COUNT,U.IP_ADDRESS, R.ROLE_ID,R.ROLE_NAME,R.ROLE_DESCRIPTION,R.ROLE_LEVEL
+	    FROM "USER" U left join USER_ROLE UR on U.USER_ID=UR.USER_ID
+	                  left join  ROLE R on R.ROLE_ID=UR.ROLE_ID 
+		WHERE U.USER_ID = #{userId}
+	</select>
+	<insert id="insert-user" parameterType="user">
+        	insert into
+        	"USER"(USER_ID,USER_NAME,PASSWORD,ORG,ORG_LEVEL,ERROR_COUNT,IP_ADDRESS) values(#{userId},#{userName},#{password},#{org},#{orgLever},#{errorCount},#{ipAddress}) 
+	</insert>
+	
+	<update id="update-user" parameterType="user">
+		UPDATE "USER" SET USER_NAME=#{userName},PASSWORD=#{password} WHERE USER_ID=#{userId}
+	</update>
+	
+	<delete id="delete-user" parameterType="string">
+		DELETE FROM "USER" WHERE USER_ID=#{userId}
+	</delete>
+	
+	<select id="queryAll-user" resultMap="resultListUser" parameterType="map">
+		SELECT U.USER_ID,U.USER_NAME,U.PASSWORD,U.ORG,U.ORG_LEVEL,U.ERROR_COUNT,U.IP_ADDRESS, R.ROLE_ID,R.ROLE_NAME,R.ROLE_DESCRIPTION,R.ROLE_LEVEL
+	    FROM "USER" U left join USER_ROLE UR on U.USER_ID=UR.USER_ID
+	                  left join  ROLE R on R.ROLE_ID=UR.ROLE_ID
+	    <if test='sort_str!=null'>
+	    	<choose>
+	    		<when test='sort_str == "userId"'>
+	     			ORDER BY U.USER_ID
+	    		</when>
+	    		<when test='sort_str == "userName"'>
+	     			ORDER BY U.USER_NAME
+	    		</when>
+	    		<when test='sort_str == "org"'>
+	     			ORDER BY U.ORG
+	    		</when>
+	    		<otherwise>
+	    			ORDER BY U.USER_ID
+	    		</otherwise>
+	    	</choose>
+	     	<if test='order_str!=null'>
+	     		${order_str}
+	     	</if>
+	    </if>
+	</select>
+	
+	<select id="queryByUserName" resultMap="resultListUser" parameterType="string">
+		SELECT USER_ID,USER_NAME,PASSWORD,ORG,ORG_LEVEL,ERROR_COUNT,IP_ADDRESS
+	    FROM "USER" 
+		WHERE USER_NAME=#{userName}
+	</select>
+	使用mybatis维护关系，两层关系的话貌似需要在 resultListUser中嵌套关联
+	<select id="getUserPermissions1" resultMap="resultListUser" parameterType="string">
+		SELECT U.USER_ID,U.USER_NAME,U.PASSWORD,U.ORG,U.ORG_LEVEL,U.ERROR_COUNT,U.IP_ADDRESS,
+			   R.ROLE_ID,R.ROLE_NAME,R.ROLE_DESCRIPTION,R.ROLE_LEVEL,
+			   P.PERMISSION_ID,P.PERMISSION_NAME,P.URL,P.DESCRIPTION
+	    FROM "USER" U,ROLE R,USER_ROLE UR,PERMISSION P,ROLE_PERMISSION RP
+		WHERE U.USER_ID=UR.USER_ID AND R.ROLE_ID=UR.ROLE_ID AND 
+		      R.ROLE_ID=RP.ROLE_ID AND P.PERMISSION_ID=RP.PERMISSION_ID
+		      AND U.USER_NAME=#{userName}
+	</select>
+	
+	<select id="getUserPermissions" resultType="string" parameterType="string">
+		SELECT P.PERMISSION_NAME
+	    FROM "USER" U,ROLE R,USER_ROLE UR,PERMISSION P,ROLE_PERMISSION RP
+		WHERE U.USER_ID=UR.USER_ID AND R.ROLE_ID=UR.ROLE_ID AND 
+		      R.ROLE_ID=RP.ROLE_ID AND P.PERMISSION_ID=RP.PERMISSION_ID
+		      AND U.USER_NAME=#{userName}
+	</select> -->
+</mapper>
